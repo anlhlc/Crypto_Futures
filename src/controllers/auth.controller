@@ -1,1 +1,28 @@
+const path = require('path');
+const authService = require('../services/auth.service');
+
+exports.loginPage = (req, res) => {
+  res.sendFile(path.join(__dirname, '../../views/login.html'));
+};
+
+exports.login = (req, res) => {
+  const success = authService.validate(req.body);
+  if (!success) return res.redirect('/');
+  req.session.auth = true;
+  res.redirect('/dashboard');
+};
+
+exports.dashboard = (req, res) => {
+  if (!req.session.auth) return res.redirect('/');
+  res.sendFile(path.join(__dirname, '../../public/dashboard.html'));
+};
+
+exports.admin = (req, res) => {
+  if (!req.session.auth) return res.redirect('/');
+  res.sendFile(path.join(__dirname, '../../public/admin.html'));
+};
+
+exports.logout = (req, res) => {
+  req.session.destroy(() => res.redirect('/'));
+};
 
